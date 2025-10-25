@@ -89,6 +89,9 @@
     <audio id="jumpSound" preload="auto">
         <source src="https://raw.githubusercontent.com/Aonner/soundeffects/main/a_jumping_sound.-1761409662267.mp3" type="audio/mpeg">
     </audio>
+    <audio id="backgroundMusic" preload="auto" loop>
+        <source src="https://raw.githubusercontent.com/Aonner/soundeffects/main/Mittens%20v1.0.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
@@ -99,6 +102,8 @@
         hitSound.volume = 0.5; // Set to 50% volume
         const jumpSound = document.getElementById('jumpSound');
         jumpSound.volume = 0.5; // Set to 50% volume
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        backgroundMusic.volume = 0.5; // Set to 50% volume
 
         // Game state
         let gameState = 'titleScreen'; // 'titleScreen', 'playing', or 'gameOver'
@@ -499,6 +504,9 @@
             hitSound.currentTime = 0; // Reset to start
             hitSound.play().catch(e => console.log('Audio play failed:', e));
 
+            // Stop background music
+            backgroundMusic.pause();
+
             // Update top score if current score is higher
             if (score > topScore) {
                 topScore = score;
@@ -525,6 +533,10 @@
             document.getElementById('instructions').style.display = 'block';
             document.getElementById('instructions').innerHTML =
                 'Press SPACE to jump | Avoid birds and jump over mice!';
+
+            // Restart background music
+            backgroundMusic.currentTime = 0; // Reset to start
+            backgroundMusic.play().catch(e => console.log('Background music play failed:', e));
         }
 
         // Start game from title screen
@@ -544,6 +556,10 @@
             document.getElementById('instructions').style.display = 'block';
             document.getElementById('instructions').innerHTML =
                 'Press SPACE to jump | Avoid birds and jump over mice!';
+
+            // Start background music
+            backgroundMusic.currentTime = 0; // Reset to start
+            backgroundMusic.play().catch(e => console.log('Background music play failed:', e));
         }
 
         // Update game
