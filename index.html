@@ -62,7 +62,7 @@
         const ctx = canvas.getContext('2d');
 
         // Game state
-        let gameState = 'playing'; // 'playing' or 'gameOver'
+        let gameState = 'titleScreen'; // 'titleScreen', 'playing', or 'gameOver'
         let score = 0;
         let frameCount = 0;
 
@@ -154,7 +154,7 @@
             danceRange: 15,
 
             update() {
-                if (this.dancing && gameState === 'playing') {
+                if (this.dancing && (gameState === 'playing' || gameState === 'titleScreen')) {
                     this.danceOffset += this.danceSpeed;
                     this.x = this.baseX + Math.sin(this.danceOffset) * this.danceRange;
                 }
@@ -184,7 +184,7 @@
 
                 // Face
                 ctx.fillStyle = '#000';
-                if (gameState === 'playing') {
+                if (gameState === 'playing' || gameState === 'titleScreen') {
                     // Happy eyes
                     ctx.beginPath();
                     ctx.arc(this.x - 12, this.y - 5, 4, 0, Math.PI * 2);
@@ -399,13 +399,35 @@
             mittens.isJumping = false;
             sun.dancing = true;
             sun.danceOffset = 0;
+            document.getElementById('score').style.display = 'block';
+            document.getElementById('instructions').style.display = 'block';
+            document.getElementById('instructions').innerHTML =
+                'Press SPACE to jump | Avoid birds and jump over mice!';
+        }
+
+        // Start game from title screen
+        function startGame() {
+            gameState = 'playing';
+            score = 0;
+            frameCount = 0;
+            mice = [];
+            birds = [];
+            mittens.y = mittens.groundY;
+            mittens.velocityY = 0;
+            mittens.isJumping = false;
+            sun.dancing = true;
+            sun.danceOffset = 0;
+            document.getElementById('score').style.display = 'block';
+            document.getElementById('instructions').style.display = 'block';
             document.getElementById('instructions').innerHTML =
                 'Press SPACE to jump | Avoid birds and jump over mice!';
         }
 
         // Update game
         function update() {
-            if (gameState === 'playing') {
+            if (gameState === 'titleScreen') {
+                sun.update();
+            } else if (gameState === 'playing') {
                 frameCount++;
                 score = Math.floor(frameCount / 10);
 
@@ -429,31 +451,55 @@
             }
         }
 
+        // Draw title screen
+        function drawTitleScreen() {
+            // Draw sun
+            sun.draw();
+
+            // Draw title
+            ctx.fillStyle = '#FF6B35';
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 4;
+            ctx.font = 'bold 60px Arial';
+            ctx.textAlign = 'center';
+            ctx.strokeText("Mittens' Grand Adventure", canvas.width / 2, 180);
+            ctx.fillText("Mittens' Grand Adventure", canvas.width / 2, 180);
+
+            // Draw subtitle
+            ctx.fillStyle = '#333';
+            ctx.font = '24px Arial';
+            ctx.fillText('Press Space Bar to Start', canvas.width / 2, 240);
+        }
+
         // Draw game
         function draw() {
             // Clear canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Draw ground line
-            ctx.strokeStyle = '#228B22';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(0, 320);
-            ctx.lineTo(canvas.width, 320);
-            ctx.stroke();
+            if (gameState === 'titleScreen') {
+                drawTitleScreen();
+            } else {
+                // Draw ground line
+                ctx.strokeStyle = '#228B22';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(0, 320);
+                ctx.lineTo(canvas.width, 320);
+                ctx.stroke();
 
-            // Draw sun
-            sun.draw();
+                // Draw sun
+                sun.draw();
 
-            // Draw enemies
-            mice.forEach(mouse => mouse.draw());
-            birds.forEach(bird => bird.draw());
+                // Draw enemies
+                mice.forEach(mouse => mouse.draw());
+                birds.forEach(bird => bird.draw());
 
-            // Draw Mittens
-            mittens.draw();
+                // Draw Mittens
+                mittens.draw();
 
-            // Update score display
-            document.getElementById('score').textContent = `Score: ${score}`;
+                // Update score display
+                document.getElementById('score').textContent = `Score: ${score}`;
+            }
         }
 
         // Game loop
@@ -467,12 +513,20 @@
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space') {
                 e.preventDefault();
-                mittens.jump();
+                if (gameState === 'titleScreen') {
+                    startGame();
+                } else if (gameState === 'playing') {
+                    mittens.jump();
+                }
             }
             if (e.code === 'KeyR' && gameState === 'gameOver') {
                 restartGame();
             }
         });
+
+        // Initialize
+        document.getElementById('score').style.display = 'none';
+        document.getElementById('instructions').style.display = 'none';
 
         // Start game
         gameLoop();
