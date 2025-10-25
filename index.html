@@ -82,9 +82,18 @@
         <div id="instructions">Press SPACE to jump | Avoid birds and jump over mice!</div>
     </div>
 
+    <!-- Audio elements -->
+    <audio id="hitSound" preload="auto">
+        <source src="https://raw.githubusercontent.com/Aonner/soundeffects/main/a_cute%2C_leaping_soun_%233-1761408818575.mp3" type="audio/mpeg">
+    </audio>
+
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
+
+        // Audio
+        const hitSound = document.getElementById('hitSound');
+        hitSound.volume = 0.5; // Set to 50% volume
 
         // Game state
         let gameState = 'titleScreen'; // 'titleScreen', 'playing', or 'gameOver'
@@ -476,6 +485,10 @@
             gameState = 'gameOver';
             mittens.isHit = true;
             sun.dancing = false;
+
+            // Play hit sound
+            hitSound.currentTime = 0; // Reset to start
+            hitSound.play().catch(e => console.log('Audio play failed:', e));
 
             // Update top score if current score is higher
             if (score > topScore) {
