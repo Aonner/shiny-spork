@@ -210,6 +210,24 @@
                     ctx.beginPath();
                     ctx.arc(this.x, this.y + 20, 15, Math.PI, Math.PI * 2);
                     ctx.stroke();
+
+                    // Tears
+                    ctx.fillStyle = '#87CEEB';
+                    // Left tear
+                    ctx.beginPath();
+                    ctx.arc(this.x - 12, this.y + 5, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.ellipse(this.x - 12, this.y + 12, 2.5, 4, 0, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Right tear
+                    ctx.beginPath();
+                    ctx.arc(this.x + 12, this.y + 5, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.ellipse(this.x + 12, this.y + 12, 2.5, 4, 0, 0, Math.PI * 2);
+                    ctx.fill();
                 }
             }
         };
