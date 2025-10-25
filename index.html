@@ -22,6 +22,12 @@
 
         #gameContainer {
             text-align: center;
+            position: relative;
+        }
+
+        #canvasWrapper {
+            position: relative;
+            display: inline-block;
         }
 
         canvas {
@@ -29,13 +35,27 @@
             border-radius: 10px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             background: linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 70%, #90EE90 70%, #90EE90 100%);
+            display: block;
         }
 
-        #score {
-            font-size: 24px;
-            margin-top: 20px;
+        #scoreDisplay {
+            position: absolute;
+            top: 15px;
+            left: 15px;
             color: #333;
             font-weight: bold;
+            text-align: left;
+            font-size: 20px;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8);
+        }
+
+        #currentScore {
+            margin-bottom: 5px;
+        }
+
+        #topScore {
+            font-size: 18px;
+            color: #666;
         }
 
         #instructions {
@@ -52,8 +72,13 @@
 </head>
 <body>
     <div id="gameContainer">
-        <canvas id="gameCanvas" width="800" height="400"></canvas>
-        <div id="score">Score: 0</div>
+        <div id="canvasWrapper">
+            <canvas id="gameCanvas" width="800" height="400"></canvas>
+            <div id="scoreDisplay">
+                <div id="currentScore">Score: 0</div>
+                <div id="topScore">Top Score: 0</div>
+            </div>
+        </div>
         <div id="instructions">Press SPACE to jump | Avoid birds and jump over mice!</div>
     </div>
 
@@ -64,6 +89,7 @@
         // Game state
         let gameState = 'titleScreen'; // 'titleScreen', 'playing', or 'gameOver'
         let score = 0;
+        let topScore = 0;
         let frameCount = 0;
 
         // Mittens the Cat
@@ -450,6 +476,12 @@
             gameState = 'gameOver';
             mittens.isHit = true;
             sun.dancing = false;
+
+            // Update top score if current score is higher
+            if (score > topScore) {
+                topScore = score;
+            }
+
             document.getElementById('instructions').innerHTML =
                 '<span class="game-over">GAME OVER!</span> Press R to restart';
         }
@@ -467,7 +499,7 @@
             mittens.isHit = false;
             sun.dancing = true;
             sun.danceOffset = 0;
-            document.getElementById('score').style.display = 'block';
+            document.getElementById('scoreDisplay').style.display = 'block';
             document.getElementById('instructions').style.display = 'block';
             document.getElementById('instructions').innerHTML =
                 'Press SPACE to jump | Avoid birds and jump over mice!';
@@ -486,7 +518,7 @@
             mittens.isHit = false;
             sun.dancing = true;
             sun.danceOffset = 0;
-            document.getElementById('score').style.display = 'block';
+            document.getElementById('scoreDisplay').style.display = 'block';
             document.getElementById('instructions').style.display = 'block';
             document.getElementById('instructions').innerHTML =
                 'Press SPACE to jump | Avoid birds and jump over mice!';
@@ -567,7 +599,8 @@
                 mittens.draw();
 
                 // Update score display
-                document.getElementById('score').textContent = `Score: ${score}`;
+                document.getElementById('currentScore').textContent = `Score: ${score}`;
+                document.getElementById('topScore').textContent = `Top Score: ${topScore}`;
             }
         }
 
@@ -594,7 +627,7 @@
         });
 
         // Initialize
-        document.getElementById('score').style.display = 'none';
+        document.getElementById('scoreDisplay').style.display = 'none';
         document.getElementById('instructions').style.display = 'none';
 
         // Start game
