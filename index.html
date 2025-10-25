@@ -76,6 +76,7 @@
             gravity: 0.6,
             jumpPower: -12,
             isJumping: false,
+            isHit: false,
             groundY: 280,
 
             jump() {
@@ -98,47 +99,112 @@
             },
 
             draw() {
-                // Cat body
-                ctx.fillStyle = '#FFA500';
-                ctx.fillRect(this.x, this.y, this.width, this.height);
+                if (this.isHit) {
+                    // Draw Mittens upside down when hit
+                    // Cat body (upside down)
+                    ctx.fillStyle = '#FFA500';
+                    ctx.fillRect(this.x, this.y, this.width, this.height);
 
-                // Cat ears
-                ctx.fillStyle = '#FF8C00';
-                ctx.beginPath();
-                ctx.moveTo(this.x + 5, this.y);
-                ctx.lineTo(this.x + 15, this.y - 10);
-                ctx.lineTo(this.x + 15, this.y);
-                ctx.fill();
+                    // Cat ears (now at bottom since upside down)
+                    ctx.fillStyle = '#FF8C00';
+                    ctx.beginPath();
+                    ctx.moveTo(this.x + 5, this.y + this.height);
+                    ctx.lineTo(this.x + 15, this.y + this.height + 10);
+                    ctx.lineTo(this.x + 15, this.y + this.height);
+                    ctx.fill();
 
-                ctx.beginPath();
-                ctx.moveTo(this.x + 25, this.y);
-                ctx.lineTo(this.x + 35, this.y - 10);
-                ctx.lineTo(this.x + 25, this.y);
-                ctx.fill();
+                    ctx.beginPath();
+                    ctx.moveTo(this.x + 25, this.y + this.height);
+                    ctx.lineTo(this.x + 35, this.y + this.height + 10);
+                    ctx.lineTo(this.x + 25, this.y + this.height);
+                    ctx.fill();
 
-                // Cat face
-                ctx.fillStyle = '#000';
-                // Eyes
-                ctx.fillRect(this.x + 10, this.y + 10, 5, 5);
-                ctx.fillRect(this.x + 25, this.y + 10, 5, 5);
+                    // X eyes
+                    ctx.strokeStyle = '#000';
+                    ctx.lineWidth = 2;
+                    // Left X
+                    ctx.beginPath();
+                    ctx.moveTo(this.x + 8, this.y + 23);
+                    ctx.lineTo(this.x + 15, this.y + 30);
+                    ctx.moveTo(this.x + 15, this.y + 23);
+                    ctx.lineTo(this.x + 8, this.y + 30);
+                    ctx.stroke();
 
-                // Whiskers
-                ctx.strokeStyle = '#000';
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.moveTo(this.x, this.y + 20);
-                ctx.lineTo(this.x - 10, this.y + 18);
-                ctx.moveTo(this.x, this.y + 25);
-                ctx.lineTo(this.x - 10, this.y + 25);
-                ctx.stroke();
+                    // Right X
+                    ctx.beginPath();
+                    ctx.moveTo(this.x + 23, this.y + 23);
+                    ctx.lineTo(this.x + 30, this.y + 30);
+                    ctx.moveTo(this.x + 30, this.y + 23);
+                    ctx.lineTo(this.x + 23, this.y + 30);
+                    ctx.stroke();
 
-                // Tail
-                ctx.strokeStyle = '#FFA500';
-                ctx.lineWidth = 3;
-                ctx.beginPath();
-                ctx.moveTo(this.x, this.y + 30);
-                ctx.quadraticCurveTo(this.x - 20, this.y + 20, this.x - 15, this.y);
-                ctx.stroke();
+                    // Tongue sticking out
+                    ctx.fillStyle = '#FF69B4';
+                    ctx.beginPath();
+                    ctx.ellipse(this.x + 20, this.y + 15, 5, 8, 0, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Whiskers (upside down)
+                    ctx.strokeStyle = '#000';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(this.x, this.y + 20);
+                    ctx.lineTo(this.x - 10, this.y + 22);
+                    ctx.moveTo(this.x, this.y + 15);
+                    ctx.lineTo(this.x - 10, this.y + 15);
+                    ctx.stroke();
+
+                    // Tail (upside down)
+                    ctx.strokeStyle = '#FFA500';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.moveTo(this.x, this.y + 10);
+                    ctx.quadraticCurveTo(this.x - 20, this.y + 20, this.x - 15, this.y + 40);
+                    ctx.stroke();
+                } else {
+                    // Normal Mittens
+                    // Cat body
+                    ctx.fillStyle = '#FFA500';
+                    ctx.fillRect(this.x, this.y, this.width, this.height);
+
+                    // Cat ears
+                    ctx.fillStyle = '#FF8C00';
+                    ctx.beginPath();
+                    ctx.moveTo(this.x + 5, this.y);
+                    ctx.lineTo(this.x + 15, this.y - 10);
+                    ctx.lineTo(this.x + 15, this.y);
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.moveTo(this.x + 25, this.y);
+                    ctx.lineTo(this.x + 35, this.y - 10);
+                    ctx.lineTo(this.x + 25, this.y);
+                    ctx.fill();
+
+                    // Cat face
+                    ctx.fillStyle = '#000';
+                    // Eyes
+                    ctx.fillRect(this.x + 10, this.y + 10, 5, 5);
+                    ctx.fillRect(this.x + 25, this.y + 10, 5, 5);
+
+                    // Whiskers
+                    ctx.strokeStyle = '#000';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(this.x, this.y + 20);
+                    ctx.lineTo(this.x - 10, this.y + 18);
+                    ctx.moveTo(this.x, this.y + 25);
+                    ctx.lineTo(this.x - 10, this.y + 25);
+                    ctx.stroke();
+
+                    // Tail
+                    ctx.strokeStyle = '#FFA500';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.moveTo(this.x, this.y + 30);
+                    ctx.quadraticCurveTo(this.x - 20, this.y + 20, this.x - 15, this.y);
+                    ctx.stroke();
+                }
             }
         };
 
@@ -382,6 +448,7 @@
         // Game over
         function gameOver() {
             gameState = 'gameOver';
+            mittens.isHit = true;
             sun.dancing = false;
             document.getElementById('instructions').innerHTML =
                 '<span class="game-over">GAME OVER!</span> Press R to restart';
@@ -397,6 +464,7 @@
             mittens.y = mittens.groundY;
             mittens.velocityY = 0;
             mittens.isJumping = false;
+            mittens.isHit = false;
             sun.dancing = true;
             sun.danceOffset = 0;
             document.getElementById('score').style.display = 'block';
@@ -415,6 +483,7 @@
             mittens.y = mittens.groundY;
             mittens.velocityY = 0;
             mittens.isJumping = false;
+            mittens.isHit = false;
             sun.dancing = true;
             sun.danceOffset = 0;
             document.getElementById('score').style.display = 'block';
