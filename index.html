@@ -86,6 +86,9 @@
     <audio id="hitSound" preload="auto">
         <source src="https://raw.githubusercontent.com/Aonner/soundeffects/main/a_cute%2C_leaping_soun_%233-1761408818575.mp3" type="audio/mpeg">
     </audio>
+    <audio id="jumpSound" preload="auto">
+        <source src="https://raw.githubusercontent.com/Aonner/soundeffects/main/a_jumping_sound.-1761409662267.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
@@ -94,6 +97,8 @@
         // Audio
         const hitSound = document.getElementById('hitSound');
         hitSound.volume = 0.5; // Set to 50% volume
+        const jumpSound = document.getElementById('jumpSound');
+        jumpSound.volume = 0.5; // Set to 50% volume
 
         // Game state
         let gameState = 'titleScreen'; // 'titleScreen', 'playing', or 'gameOver'
@@ -118,6 +123,10 @@
                 if (!this.isJumping && gameState === 'playing') {
                     this.velocityY = this.jumpPower;
                     this.isJumping = true;
+
+                    // Play jump sound
+                    jumpSound.currentTime = 0; // Reset to start
+                    jumpSound.play().catch(e => console.log('Jump audio play failed:', e));
                 }
             },
 
