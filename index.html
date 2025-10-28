@@ -136,6 +136,9 @@
             jumpPower: -12,
             isJumping: false,
             isHit: false,
+            isFlashing: false,
+            flashTimer: 0,
+            flashDuration: 120, // Flash for 2 seconds at 60fps
             groundY: 280,
 
             jump() {
@@ -159,9 +162,22 @@
                     this.velocityY = 0;
                     this.isJumping = false;
                 }
+
+                // Update flashing timer
+                if (this.isFlashing) {
+                    this.flashTimer--;
+                    if (this.flashTimer <= 0) {
+                        this.isFlashing = false;
+                    }
+                }
             },
 
             draw() {
+                // Flash effect - skip drawing every 10 frames when flashing
+                if (this.isFlashing && Math.floor(this.flashTimer / 5) % 2 === 0) {
+                    return; // Don't draw Mittens on this frame
+                }
+
                 if (this.isHit) {
                     // Draw Mittens upside down when hit
                     // Cat body (upside down)
@@ -496,6 +512,9 @@
                 // Brief repositioning to show hit occurred
                 mittens.y = mittens.groundY;
                 mittens.velocityY = 0;
+                // Start flashing for invincibility
+                mittens.isFlashing = true;
+                mittens.flashTimer = mittens.flashDuration;
             } else {
                 // No lives left, game over
                 gameOver();
@@ -504,6 +523,11 @@
 
         // Collision detection
         function checkCollisions() {
+            // Skip collision detection if Mittens is flashing (invincible)
+            if (mittens.isFlashing) {
+                return;
+            }
+
             // Check collision with mice
             for (let mouse of mice) {
                 if (mittens.x < mouse.x + mouse.width &&
@@ -564,6 +588,8 @@
             mittens.velocityY = 0;
             mittens.isJumping = false;
             mittens.isHit = false;
+            mittens.isFlashing = false;
+            mittens.flashTimer = 0;
             sun.dancing = true;
             sun.danceOffset = 0;
             document.getElementById('scoreDisplay').style.display = 'block';
@@ -589,6 +615,8 @@
             mittens.velocityY = 0;
             mittens.isJumping = false;
             mittens.isHit = false;
+            mittens.isFlashing = false;
+            mittens.flashTimer = 0;
             sun.dancing = true;
             sun.danceOffset = 0;
             document.getElementById('scoreDisplay').style.display = 'block';
