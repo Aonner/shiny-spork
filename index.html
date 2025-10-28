@@ -58,6 +58,16 @@
             color: #666;
         }
 
+        #livesDisplay {
+            margin-top: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .life-icon {
+            font-size: 24px;
+        }
+
         #instructions {
             margin-top: 15px;
             font-size: 16px;
@@ -77,6 +87,7 @@
             <div id="scoreDisplay">
                 <div id="currentScore">Score: 0</div>
                 <div id="topScore">Top Score: 0</div>
+                <div id="livesDisplay"></div>
             </div>
         </div>
         <div id="instructions">Press SPACE to jump | Avoid birds and jump over mice!</div>
@@ -110,6 +121,9 @@
         let score = 0;
         let topScore = 0;
         let frameCount = 0;
+        let lives = 0;
+        let maxLives = 3;
+        let lastLifeScore = 0; // Track when last life was awarded
 
         // Mittens the Cat
         const mittens = {
@@ -471,6 +485,23 @@
             }
         }
 
+        // Handle collision - check lives before game over
+        function handleHit() {
+            if (lives > 0) {
+                // Use an extra life
+                lives--;
+                // Play hit sound
+                hitSound.currentTime = 0;
+                hitSound.play().catch(e => console.log('Audio play failed:', e));
+                // Brief repositioning to show hit occurred
+                mittens.y = mittens.groundY;
+                mittens.velocityY = 0;
+            } else {
+                // No lives left, game over
+                gameOver();
+            }
+        }
+
         // Collision detection
         function checkCollisions() {
             // Check collision with mice
@@ -479,7 +510,9 @@
                     mittens.x + mittens.width > mouse.x &&
                     mittens.y + mittens.height > mouse.y &&
                     mittens.y < mouse.y + mouse.height) {
-                    gameOver();
+                    handleHit();
+                    mice = mice.filter(m => m !== mouse); // Remove the mouse
+                    return; // Exit to prevent multiple collisions in one frame
                 }
             }
 
@@ -489,7 +522,9 @@
                     mittens.x + mittens.width > bird.x &&
                     mittens.y < bird.y + bird.height &&
                     mittens.y + mittens.height > bird.y) {
-                    gameOver();
+                    handleHit();
+                    birds = birds.filter(b => b !== bird); // Remove the bird
+                    return; // Exit to prevent multiple collisions in one frame
                 }
             }
         }
@@ -521,6 +556,8 @@
             gameState = 'playing';
             score = 0;
             frameCount = 0;
+            lives = 0;
+            lastLifeScore = 0;
             mice = [];
             birds = [];
             mittens.y = mittens.groundY;
@@ -544,6 +581,8 @@
             gameState = 'playing';
             score = 0;
             frameCount = 0;
+            lives = 0;
+            lastLifeScore = 0;
             mice = [];
             birds = [];
             mittens.y = mittens.groundY;
@@ -570,6 +609,12 @@
                 frameCount++;
                 score = Math.floor(frameCount / 10);
 
+                // Award extra life every 100 points (max 3 lives)
+                if (score > 0 && score % 100 === 0 && score > lastLifeScore && lives < maxLives) {
+                    lives++;
+                    lastLifeScore = score;
+                }
+
                 mittens.update();
                 sun.update();
 
@@ -587,6 +632,18 @@
 
                 spawnEnemies();
                 checkCollisions();
+            }
+        }
+
+        // Update lives display with cat icons
+        function updateLivesDisplay() {
+            const livesDisplay = document.getElementById('livesDisplay');
+            livesDisplay.innerHTML = '';
+            for (let i = 0; i < lives; i++) {
+                const lifeIcon = document.createElement('span');
+                lifeIcon.className = 'life-icon';
+                lifeIcon.textContent = '🐱';
+                livesDisplay.appendChild(lifeIcon);
             }
         }
 
@@ -639,6 +696,9 @@
                 // Update score display
                 document.getElementById('currentScore').textContent = `Score: ${score}`;
                 document.getElementById('topScore').textContent = `Top Score: ${topScore}`;
+
+                // Update lives display
+                updateLivesDisplay();
             }
         }
 
