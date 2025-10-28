@@ -592,10 +592,10 @@
         class Tree {
             constructor(x) {
                 this.x = x;
-                this.y = 240;
-                this.width = 40;
-                this.height = 80;
-                this.speed = 1.5;
+                this.y = 230;
+                this.width = 50;
+                this.height = 95;
+                this.speed = 1.2; // Slower speed for background effect
             }
 
             update() {
@@ -605,20 +605,20 @@
             }
 
             draw() {
-                // Trunk
+                // Trunk (slightly larger)
                 ctx.fillStyle = '#8B4513';
-                ctx.fillRect(this.x + 15, this.y + 40, 10, 40);
+                ctx.fillRect(this.x + 18, this.y + 45, 14, 50);
 
-                // Foliage (three circles)
+                // Foliage (larger circles)
                 ctx.fillStyle = '#228B22';
                 ctx.beginPath();
-                ctx.arc(this.x + 20, this.y + 20, 18, 0, Math.PI * 2);
+                ctx.arc(this.x + 25, this.y + 22, 22, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.beginPath();
-                ctx.arc(this.x + 10, this.y + 35, 15, 0, Math.PI * 2);
+                ctx.arc(this.x + 12, this.y + 40, 18, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.beginPath();
-                ctx.arc(this.x + 30, this.y + 35, 15, 0, Math.PI * 2);
+                ctx.arc(this.x + 38, this.y + 40, 18, 0, Math.PI * 2);
                 ctx.fill();
             }
 
